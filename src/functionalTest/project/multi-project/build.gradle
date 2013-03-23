@@ -1,0 +1,17 @@
+buildscript {
+  repositories {
+    flatDir name: 'localRepository', dirs: '/Users/steve/Projects/gradle-dependency-management-plugin/build/libs'
+    mavenCentral()
+  }
+  dependencies {
+    classpath ':gradle-dependency-management-plugin:0.1'
+  }
+
+
+}
+
+apply plugin: 'dependencyManagement'
+
+dependencyManagement {
+  dependency('log4j:log4j:1.2.17')
+}

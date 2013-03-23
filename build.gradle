@@ -1,0 +1,31 @@
+apply plugin: 'groovy'
+
+version = '0.1'
+repositories {
+  mavenCentral()
+}
+
+sourceSets {
+  functionalTest {
+    groovy.srcDir file('src/functionalTest/groovy')
+  }
+}
+
+dependencies {
+  compile gradleApi()
+  groovy localGroovy()
+  testCompile 'org.unitils:unitils-mock:3.3'
+
+  functionalTestCompile configurations.testCompile
+  functionalTestRuntime configurations.testRuntime
+}
+
+task functionalTest(type:Test, dependsOn: ['test', 'assemble']) {
+  testClassesDir = sourceSets.functionalTest.output.classesDir
+  classpath = sourceSets.functionalTest.runtimeClasspath
+  testReportDir = file('build/reports/functional-test')
+  testResultsDir = file('build/functional-test-results')
+  systemProperty('projects.basedir', file('src/functionalTest/project').absolutePath)
+}
+
+build.dependsOn.add(functionalTest)
