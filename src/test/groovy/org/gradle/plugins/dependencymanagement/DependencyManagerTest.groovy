@@ -12,26 +12,41 @@ import org.junit.Test
  */
 class DependencyManagerTest extends org.unitils.UnitilsJUnit4 {
   @Test
-  public void findsDependencyInCurrentIfPresent() {
+  void findsDependencyInCurrentIfPresent() {
     DependencyManagementExtension extension = new DependencyManagementExtension()
     extension.dependency(dependencyDef)
 
     def mocks = newMocks()
 
-    mocks.projectMock.demand.getExtensions() { mocks.extensionsMock.proxyInstance() }
-    mocks.extensionsMock.demand.findByType() { extension }
-    mocks.projectMock.demand.getDependencies() { mocks.dependenciesMock.proxyInstance() }
+    mocks.projectMock.demand.getExtensions { mocks.extensionsMock.proxyInstance() }
+    mocks.extensionsMock.demand.findByType { extension }
+    mocks.projectMock.demand.getDependencies { mocks.dependenciesMock.proxyInstance() }
     mocks.dependenciesMock.demand.create(dependencyDef) { dependency }
 
     def sut = new DependencyManager(mocks.projectMock.proxyInstance())
     def output = sut.lookup(testData.groupId, testData.artifactId)
 
-    Assert.assertNotNull(output)
+    assert output
     Assert.assertSame(dependency, output)
   }
 
+  @Test(expected = IllegalArgumentException)
+  void throwsExceptionWhenNotFound() {
+    DependencyManagementExtension extension = new DependencyManagementExtension()
+    extension.dependency('not-' + dependencyDef)
+
+    def mocks = newMocks()
+
+    mocks.projectMock.demand.getExtensions { mocks.extensionsMock.proxyInstance() }
+    mocks.extensionsMock.demand.findByType { extension }
+    mocks.projectMock.demand.getParent { null }
+
+    def sut = new DependencyManager(mocks.projectMock.proxyInstance())
+    sut.lookup(testData.groupId, testData.artifactId)
+  }
+
   @Test
-  public void findsDependencyInParentIfPresent() {
+  void findsDependencyInParentIfPresent() {
     DependencyManagementExtension currentExtension = new DependencyManagementExtension()
     DependencyManagementExtension parentExtension = new DependencyManagementExtension()
     parentExtension.dependency(dependencyDef)
@@ -39,23 +54,23 @@ class DependencyManagerTest extends org.unitils.UnitilsJUnit4 {
     def mocks = newMocks()
     def parentMocks = newMocks()
 
-    mocks.projectMock.demand.getExtensions() { mocks.extensionsMock.proxyInstance() }
-    mocks.extensionsMock.demand.findByType() { currentExtension }
-    mocks.projectMock.demand.getParent() { parentMocks.projectMock.proxyInstance() }
-    parentMocks.projectMock.demand.getExtensions() { parentMocks.extensionsMock.proxyInstance() }
-    parentMocks.extensionsMock.demand.findByType() { parentExtension }
-    mocks.projectMock.demand.getDependencies() { mocks.dependenciesMock.proxyInstance() }
+    mocks.projectMock.demand.getExtensions { mocks.extensionsMock.proxyInstance() }
+    mocks.extensionsMock.demand.findByType { currentExtension }
+    mocks.projectMock.demand.getParent { parentMocks.projectMock.proxyInstance() }
+    parentMocks.projectMock.demand.getExtensions { parentMocks.extensionsMock.proxyInstance() }
+    parentMocks.extensionsMock.demand.findByType { parentExtension }
+    mocks.projectMock.demand.getDependencies { mocks.dependenciesMock.proxyInstance() }
     mocks.dependenciesMock.demand.create(dependencyDef) { dependency }
 
     def sut = new DependencyManager(mocks.projectMock.proxyInstance())
     def output = sut.lookup(testData.groupId, testData.artifactId)
 
-    Assert.assertNotNull(output)
+    assert output
     Assert.assertSame(dependency, output)
   }
 
   @Test
-  public void skipsParentIfExtensionNotPresent() {
+  void skipsParentIfExtensionNotPresent() {
     DependencyManagementExtension currentExtension = new DependencyManagementExtension()
     DependencyManagementExtension grandParentExtension = new DependencyManagementExtension()
     grandParentExtension.dependency(dependencyDef)
@@ -64,36 +79,37 @@ class DependencyManagerTest extends org.unitils.UnitilsJUnit4 {
     def parentMocks = newMocks()
     def grandParentMocks = newMocks()
 
-    mocks.projectMock.demand.getExtensions() { mocks.extensionsMock.proxyInstance() }
-    mocks.extensionsMock.demand.findByType() { currentExtension }
-    mocks.projectMock.demand.getParent() { parentMocks.projectMock.proxyInstance() }
-    parentMocks.projectMock.demand.getExtensions() { parentMocks.extensionsMock.proxyInstance() }
-    parentMocks.extensionsMock.demand.findByType() { null }
-    parentMocks.projectMock.demand.getParent() { grandParentMocks.projectMock.proxyInstance() }
-    grandParentMocks.projectMock.demand.getExtensions() { grandParentMocks.extensionsMock.proxyInstance() }
-    grandParentMocks.extensionsMock.demand.findByType() { grandParentExtension }
-    mocks.projectMock.demand.getDependencies() { mocks.dependenciesMock.proxyInstance() }
+    mocks.projectMock.demand.getExtensions { mocks.extensionsMock.proxyInstance() }
+    mocks.extensionsMock.demand.findByType { currentExtension }
+    mocks.projectMock.demand.getParent { parentMocks.projectMock.proxyInstance() }
+    parentMocks.projectMock.demand.getExtensions { parentMocks.extensionsMock.proxyInstance() }
+    parentMocks.extensionsMock.demand.findByType { null }
+    parentMocks.projectMock.demand.getParent { grandParentMocks.projectMock.proxyInstance() }
+    grandParentMocks.projectMock.demand.getExtensions { grandParentMocks.extensionsMock.proxyInstance() }
+    grandParentMocks.extensionsMock.demand.findByType { grandParentExtension }
+    mocks.projectMock.demand.getDependencies { mocks.dependenciesMock.proxyInstance() }
     mocks.dependenciesMock.demand.create(dependencyDef) { dependency }
 
     def sut = new DependencyManager(mocks.projectMock.proxyInstance())
     def output = sut.lookup(testData.groupId, testData.artifactId)
 
-    Assert.assertNotNull(output)
+    assert output
     Assert.assertSame(dependency, output)
   }
 
-  private static def newMocks() {
-    return [
+  private static newMocks() {
+    [
             dependenciesMock: new MockFor(DependencyHandler),
             projectMock : new MockFor(Project),
             extensionsMock : new MockFor(ExtensionContainer)
     ]
   }
-  private def testData = [
+  private final testData = [
           groupId: RandomStringUtils.randomAlphabetic(5),
           artifactId: RandomStringUtils.randomAlphabetic(6),
           version: RandomStringUtils.randomNumeric(1) + '.' + RandomStringUtils.randomNumeric(1)
   ]
-  private def dependencyDef = testData.groupId + ':' + testData.artifactId + ':' + testData.version
-  private def dependency = new DefaultExternalModuleDependency(testData.groupId, testData.artifactId, testData.version)
+  private final dependencyDef = testData.groupId + ':' + testData.artifactId + ':' + testData.version
+  private final dependency =
+    new DefaultExternalModuleDependency(testData.groupId, testData.artifactId, testData.version)
 }

@@ -6,24 +6,24 @@ import org.gradle.api.artifacts.Dependency
 /**
  */
 class DependencyManager {
-  private Project project
+  private final Project project
 
   DependencyManager(Project project) {
     this.project = project
   }
 
-  def Dependency lookup(String groupId, String artifactId) {
+  Dependency lookup(String groupId, String artifactId) {
     def dependency = findDependency(project, groupId + ':' + artifactId)
 
     if (null != dependency) {
-      return dependency
+      dependency
     } else {
-      throw new IllegalArgumentException("Dependency not found")
+      throw new IllegalArgumentException('Dependency not found')
     }
   }
 
-  private def Dependency findDependency(Project current, String prefix) {
-    def ext = current.extensions.findByType(DependencyManagementExtension.class)
+  private Dependency findDependency(Project current, String prefix) {
+    def ext = current.extensions.findByType(DependencyManagementExtension)
 
     if (null != ext) {
       for (String definition : ext.definitions) {
@@ -33,11 +33,11 @@ class DependencyManager {
       }
     }
 
-    def parent = current.getParent()
+    def parent = current.parent
     if (null != parent) {
-      return findDependency(parent, prefix)
+      findDependency(parent, prefix)
     } else {
-      return null
+      null
     }
   }
 }

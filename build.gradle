@@ -1,5 +1,8 @@
 apply plugin: 'groovy'
-
+apply plugin: 'codenarc'
+buildscript {
+  apply from: 'https://github.com/valkolovos/gradle_cobertura/raw/master/repo/gradle_cobertura/gradle_cobertura/1.2.1/coberturainit.gradle'
+}
 version = '0.1'
 repositories {
   mavenCentral()
@@ -18,8 +21,13 @@ dependencies {
 
   functionalTestCompile configurations.testCompile
   functionalTestRuntime configurations.testRuntime
+
+  codenarc 'org.codenarc:CodeNarc:0.18.1'
 }
 
+cobertura {
+  coverageSourceDirs = project.sourceSets.main.groovy.srcDirs
+}
 task functionalTest(type:Test, dependsOn: ['test', 'assemble']) {
   testClassesDir = sourceSets.functionalTest.output.classesDir
   classpath = sourceSets.functionalTest.runtimeClasspath
