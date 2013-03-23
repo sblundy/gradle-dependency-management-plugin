@@ -13,7 +13,7 @@ class FunctionalTest {
     def exitCode  = test.waitFor()
     printAll(System.out, test.inputStream)
     printAll(System.err, test.errorStream)
-    assert exitCode, 0
+    assert exitCode == 0
   }
 
   private static void printAll(PrintStream out, InputStream stream) {
