@@ -5,7 +5,8 @@ Bringing centralized dependency management to Gradle multi-module projects. Copy
 
 Yes, this is shamelessly lifted from Maven. But these plugin will aim to be an improvement, both in terms of shedding odd Mavenisms and improved usefulness and clarity. 
 
-===================================
+Usage
+-----------------------------------
 
 The dependency definitions are defined in the `dependencyManagement` block. Normally, it'll be in the root project, but it can be in any of the user module's parents, even the user module itself.
 
