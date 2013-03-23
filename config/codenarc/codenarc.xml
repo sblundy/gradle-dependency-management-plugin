@@ -3,17 +3,8 @@
          xsi:schemaLocation="http://codenarc.org/ruleset/1.0 http://codenarc.org/ruleset-schema.xsd"
          xsi:noNamespaceSchemaLocation="http://codenarc.org/ruleset-schema.xsd">
 
-  <description>Sample rule set</description>
+  <description>Project rule set</description>
 
- <!-- <ruleset-ref path='rulesets/imports.xml'>
-    <rule-config name='DuplicateImport'>
-      <property name='priority' value='1'/>
-    </rule-config>
-  </ruleset-ref>-->
-
-  <!--<ruleset-ref path='rulesets/basic.xml'>
-    <exclude name='StringInstantiation'/>
-  </ruleset-ref>-->
   <ruleset-ref path='rulesets/basic.xml'/>
   <ruleset-ref path='rulesets/braces.xml'/>
   <ruleset-ref path='rulesets/concurrency.xml'/>
@@ -22,11 +13,9 @@
   <ruleset-ref path='rulesets/dry.xml'/>
   <ruleset-ref path='rulesets/exceptions.xml'/>
   <ruleset-ref path='rulesets/formatting.xml'/>
-  <ruleset-ref path='rulesets/generic.xml'/><!--
-  <ruleset-ref path='rulesets/grails.xml'/>-->
+  <ruleset-ref path='rulesets/generic.xml'/>
   <ruleset-ref path='rulesets/groovyism.xml'/>
-  <ruleset-ref path='rulesets/imports.xml'/><!--
-  <ruleset-ref path='rulesets/jdbc.xml'/>-->
+  <ruleset-ref path='rulesets/imports.xml'/>
   <ruleset-ref path='rulesets/junit.xml'/>
   <ruleset-ref path='rulesets/logging.xml'/>
   <ruleset-ref path='rulesets/naming.xml'/>
