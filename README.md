@@ -15,7 +15,7 @@ The dependency definitions are defined in the `dependencyManagement` block. Norm
 apply plugin: 'dependencyManagement'
 
 dependencyManagement {
-  dependency('log4j:log4j:1.2.17')
+  dependency('org.testng:testng:5.5:jdk15')
 }
 ```
 
