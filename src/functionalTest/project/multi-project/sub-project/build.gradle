@@ -1,6 +1,6 @@
 buildscript {
   repositories {
-    flatDir name: 'localRepository', dirs: '/Users/steve/Projects/gradle-dependency-management-plugin/build/libs'
+    flatDir name: 'localRepository', dirs: System.properties['sut.install.dir']
     mavenCentral()
   }
   dependencies {
@@ -8,17 +8,30 @@ buildscript {
   }
 }
 
+repositories {
+  mavenCentral()
+}
 
 apply plugin: 'dependencyManagement'
 
 configurations {
+  compile
   test
+  withClosure
 }
 
 dependencies {
-  test dependencyManager.lookup('log4j', 'log4j')
+  compile dependencyFinder.getDependency(group: 'log4j', name: 'log4j')
+  test dependencyFinder.getDependency('org.testng', 'testng')
+  withClosure dependencyFinder.getDependency('org.springframework','spring-core')
 }
 
 task build() << {
-  assert !configurations.test.dependencies.matching({dep -> dep.name.equals('log4j') }).isEmpty()
+  assert !configurations.compile.dependencies.matching({dep -> dep.name.equals('log4j') }).isEmpty()
+  assert !configurations.test.dependencies.matching({dep -> dep.name.equals('testng') }).isEmpty()
+  assert !configurations.withClosure.dependencies.matching({dep -> dep.name.equals('spring-core') }).isEmpty()
+
+  def withClosureFiles = configurations.withClosure.resolve().toList()
+  assert withClosureFiles.any {file -> file.name.contains('commons-logging') }
+  assert !withClosureFiles.any {file -> file.name.contains('aspectjweaver') }
 }

@@ -5,15 +5,21 @@ import org.gradle.api.artifacts.Dependency
 
 /**
  */
-class DependencyManager {
+class DependencyManager implements DefinitionFinder {
   private final Project project
+  private final DefinitionLookup definitionLookup
 
-  DependencyManager(Project project) {
+  DependencyManager(Project project, DefinitionLookup definitionLookup) {
     this.project = project
+    this.definitionLookup = definitionLookup
   }
 
-  Dependency lookup(String groupId, String artifactId) {
-    def dependency = findDependency(project, groupId + ':' + artifactId)
+  Dependency getDependency(String group, String name) {
+    getDependency([group: group, name:  name])
+  }
+
+  Dependency getDependency(Map<String, String> coordinates) {
+    def dependency = findDependency(coordinates)
 
     if (null != dependency) {
       dependency
@@ -22,22 +28,28 @@ class DependencyManager {
     }
   }
 
-  private Dependency findDependency(Project current, String prefix) {
-    def ext = current.extensions.findByType(DependencyManagementExtension)
+  Dependency findDependency(Map<String, String> coordinates) {
+    def dependency = definitionLookup.findDependency(coordinates)
+    if (null != dependency) {
+      return dependency
+    }
 
-    if (null != ext) {
-      for (String definition : ext.definitions) {
-        if (definition.startsWith(prefix)) {
-          return project.dependencies.create(definition)
-        }
+    def parentManager = findParentManager()
+    null == parentManager ? null : parentManager.findDependency(coordinates)
+  }
+
+  private DefinitionFinder findParentManager() {
+    def current = project.parent
+
+    while (current != null) {
+      def parentManager = current.convention.findByType(DefinitionFinder)
+      if (parentManager == null) {
+        current = current.parent
+      } else {
+        return parentManager
       }
     }
 
-    def parent = current.parent
-    if (null != parent) {
-      findDependency(parent, prefix)
-    } else {
-      null
-    }
+    null
   }
 }

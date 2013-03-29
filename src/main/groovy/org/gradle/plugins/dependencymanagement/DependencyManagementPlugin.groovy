@@ -6,7 +6,8 @@ import org.gradle.api.Project
 class DependencyManagementPlugin implements Plugin<Project> {
   @Override
   void apply(final Project project) {
-    project.extensions.create('dependencyManagement', DependencyManagementExtension)
-    project.convention.create('dependencyManager', DependencyManager, project)
+    def db = new DefinitionDatabase()
+    project.extensions.create('dependencyManagement', DependencyManagementExtension, project, db)
+    project.convention.create('dependencyFinder', DependencyManager, project, db)
   }
 }

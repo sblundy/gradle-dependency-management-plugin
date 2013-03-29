@@ -17,7 +17,6 @@ sourceSets {
 dependencies {
   compile gradleApi()
   groovy localGroovy()
-  testCompile 'org.unitils:unitils-mock:3.3'
 
   functionalTestCompile configurations.testCompile
   functionalTestRuntime configurations.testRuntime
@@ -34,6 +33,7 @@ task functionalTest(type:Test, dependsOn: ['test', 'assemble']) {
   testReportDir = file('build/reports/functional-test')
   testResultsDir = file('build/functional-test-results')
   systemProperty('projects.basedir', file('src/functionalTest/project').absolutePath)
+  systemProperty('sut.install.dir', file('build/libs').absolutePath)
 }
 
 build.dependsOn.add(functionalTest)

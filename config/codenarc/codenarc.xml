@@ -15,8 +15,14 @@
   <ruleset-ref path='rulesets/formatting.xml'/>
   <ruleset-ref path='rulesets/generic.xml'/>
   <ruleset-ref path='rulesets/groovyism.xml'/>
-  <ruleset-ref path='rulesets/imports.xml'/>
-  <ruleset-ref path='rulesets/junit.xml'/>
+  <ruleset-ref path='rulesets/imports.xml'>
+    <rule-config name="MisorderedStaticImports">
+      <property name="comesBefore" value="false"/>
+    </rule-config>
+  </ruleset-ref>
+  <ruleset-ref path='rulesets/junit.xml'>
+    <exclude name="JUnitStyleAssertions"/>
+  </ruleset-ref>
   <ruleset-ref path='rulesets/logging.xml'/>
   <ruleset-ref path='rulesets/naming.xml'/>
   <ruleset-ref path='rulesets/security.xml'/>

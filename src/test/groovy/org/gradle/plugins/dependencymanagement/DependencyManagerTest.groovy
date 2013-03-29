@@ -1,30 +1,21 @@
 package org.gradle.plugins.dependencymanagement
 
 import groovy.mock.interceptor.MockFor
-import org.apache.commons.lang.RandomStringUtils
 import org.gradle.api.Project
-import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
-import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.api.plugins.Convention
 import org.junit.Assert
 import org.junit.Test
 /**
  */
-class DependencyManagerTest extends org.unitils.UnitilsJUnit4 {
+class DependencyManagerTest {
   @Test
   void findsDependencyInCurrentIfPresent() {
-    DependencyManagementExtension extension = new DependencyManagementExtension()
-    extension.dependency(dependencyDef)
+    def mocks = new Mocks()
 
-    def mocks = newMocks()
+    mocks.findsDependencyInExtensions()
 
-    mocks.projectMock.demand.getExtensions { mocks.extensionsMock.proxyInstance() }
-    mocks.extensionsMock.demand.findByType { extension }
-    mocks.projectMock.demand.getDependencies { mocks.dependenciesMock.proxyInstance() }
-    mocks.dependenciesMock.demand.create(dependencyDef) { dependency }
-
-    def sut = new DependencyManager(mocks.projectMock.proxyInstance())
-    def output = sut.lookup(testData.groupId, testData.artifactId)
+    def sut = newSut(mocks)
+    def output = sut.getDependency(testData)
 
     assert output
     Assert.assertSame(dependency, output)
@@ -32,84 +23,109 @@ class DependencyManagerTest extends org.unitils.UnitilsJUnit4 {
 
   @Test(expected = IllegalArgumentException)
   void throwsExceptionWhenNotFound() {
-    DependencyManagementExtension extension = new DependencyManagementExtension()
-    extension.dependency('not-' + dependencyDef)
+    def mocks = new Mocks()
 
-    def mocks = newMocks()
+    mocks.doesNotFindInLocal()
+    mocks.parentReturnsNull()
 
-    mocks.projectMock.demand.getExtensions { mocks.extensionsMock.proxyInstance() }
-    mocks.extensionsMock.demand.findByType { extension }
-    mocks.projectMock.demand.getParent { null }
-
-    def sut = new DependencyManager(mocks.projectMock.proxyInstance())
-    sut.lookup(testData.groupId, testData.artifactId)
+    def sut = newSut(mocks)
+    sut.getDependency(testData)
   }
 
   @Test
   void findsDependencyInParentIfPresent() {
-    DependencyManagementExtension currentExtension = new DependencyManagementExtension()
-    DependencyManagementExtension parentExtension = new DependencyManagementExtension()
-    parentExtension.dependency(dependencyDef)
+    def mocks = new Mocks()
+    def parentMocks = new Mocks()
 
-    def mocks = newMocks()
-    def parentMocks = newMocks()
+    mocks.doesNotFindInLocal()
+    mocks.looksUpParentProject(parentMocks)
+    parentMocks.findsParentFinder()
+    parentMocks.findsDependencyInManager()
 
-    mocks.projectMock.demand.getExtensions { mocks.extensionsMock.proxyInstance() }
-    mocks.extensionsMock.demand.findByType { currentExtension }
-    mocks.projectMock.demand.getParent { parentMocks.projectMock.proxyInstance() }
-    parentMocks.projectMock.demand.getExtensions { parentMocks.extensionsMock.proxyInstance() }
-    parentMocks.extensionsMock.demand.findByType { parentExtension }
-    mocks.projectMock.demand.getDependencies { mocks.dependenciesMock.proxyInstance() }
-    mocks.dependenciesMock.demand.create(dependencyDef) { dependency }
-
-    def sut = new DependencyManager(mocks.projectMock.proxyInstance())
-    def output = sut.lookup(testData.groupId, testData.artifactId)
+    def sut = newSut(mocks)
+    def output = sut.getDependency(testData)
 
     assert output
     Assert.assertSame(dependency, output)
+  }
+
+  @Test(expected = IllegalArgumentException)
+  void throwsExceptionIfNotInEitherCurrentOrParent() {
+    def mocks = new Mocks()
+    def parentMocks = new Mocks()
+
+    mocks.doesNotFindInLocal()
+    mocks.looksUpParentProject(parentMocks)
+    parentMocks.doesNotFindParentFinder()
+    parentMocks.parentReturnsNull()
+
+    def sut = newSut(mocks)
+    sut.getDependency(testData)
   }
 
   @Test
-  void skipsParentIfExtensionNotPresent() {
-    DependencyManagementExtension currentExtension = new DependencyManagementExtension()
-    DependencyManagementExtension grandParentExtension = new DependencyManagementExtension()
-    grandParentExtension.dependency(dependencyDef)
+  void findsDependencyInGrandParentIfNotInParent() {
+    def mocks = new Mocks()
+    def parentMocks = new Mocks()
+    def grandParentMocks = new Mocks()
 
-    def mocks = newMocks()
-    def parentMocks = newMocks()
-    def grandParentMocks = newMocks()
+    mocks.doesNotFindInLocal()
+    mocks.looksUpParentProject(parentMocks)
+    parentMocks.doesNotFindParentFinder()
+    parentMocks.looksUpParentProject(grandParentMocks)
+    grandParentMocks.findsParentFinder()
+    grandParentMocks.findsDependencyInManager()
 
-    mocks.projectMock.demand.getExtensions { mocks.extensionsMock.proxyInstance() }
-    mocks.extensionsMock.demand.findByType { currentExtension }
-    mocks.projectMock.demand.getParent { parentMocks.projectMock.proxyInstance() }
-    parentMocks.projectMock.demand.getExtensions { parentMocks.extensionsMock.proxyInstance() }
-    parentMocks.extensionsMock.demand.findByType { null }
-    parentMocks.projectMock.demand.getParent { grandParentMocks.projectMock.proxyInstance() }
-    grandParentMocks.projectMock.demand.getExtensions { grandParentMocks.extensionsMock.proxyInstance() }
-    grandParentMocks.extensionsMock.demand.findByType { grandParentExtension }
-    mocks.projectMock.demand.getDependencies { mocks.dependenciesMock.proxyInstance() }
-    mocks.dependenciesMock.demand.create(dependencyDef) { dependency }
-
-    def sut = new DependencyManager(mocks.projectMock.proxyInstance())
-    def output = sut.lookup(testData.groupId, testData.artifactId)
+    def sut = newSut(mocks)
+    def output = sut.getDependency(testData)
 
     assert output
     Assert.assertSame(dependency, output)
   }
 
-  private static newMocks() {
-    [
-            dependenciesMock: new MockFor(DependencyHandler),
-            projectMock : new MockFor(Project),
-            extensionsMock : new MockFor(ExtensionContainer)
-    ]
+  @SuppressWarnings('GroovyAssignabilityCheck')
+  private static DependencyManager newSut(Mocks mocks) {
+    new DependencyManager(mocks.projectMock.proxyInstance(), mocks.lookupMock.proxyInstance())
   }
-  private final testData = [
-          groupId: RandomStringUtils.randomAlphabetic(5),
-          artifactId: RandomStringUtils.randomAlphabetic(6),
-          version: RandomStringUtils.randomNumeric(1) + '.' + RandomStringUtils.randomNumeric(1)
-  ]
-  private final dependencyDef = testData.groupId + ':' + testData.artifactId + ':' + testData.version
-  private final dependency =
-    new DefaultExternalModuleDependency(testData.groupId, testData.artifactId, testData.version)
+
+  private class Mocks {
+    def projectMock = new MockFor(Project)
+    def lookupMock = new MockFor(DefinitionLookup)
+    def conventionMock = new MockFor(Convention)
+    def managerMock = new MockFor(DefinitionFinder)
+
+    void findsDependencyInExtensions() {
+      lookupMock.demand.findDependency(testData.group, testData.name) { dependency }
+    }
+
+    void doesNotFindInLocal() {
+      lookupMock.demand.findDependency(testData.group, testData.name) { null }
+    }
+    
+    void parentReturnsNull() {
+      projectMock.demand.getParent { null }
+    }
+    
+    void looksUpParentProject(Mocks parentMocks) {
+      projectMock.demand.getParent { parentMocks.projectMock.proxyInstance() }
+    }
+
+    void findsDependencyInManager() {
+      managerMock.demand.findDependency { dependency }
+    }
+
+    void findsParentFinder() {
+      projectMock.demand.getConvention { conventionMock.proxyInstance() }
+      conventionMock.demand.findByType { managerMock.proxyInstance() }
+    }
+
+    void doesNotFindParentFinder() {
+      projectMock.demand.getConvention { conventionMock.proxyInstance() }
+      conventionMock.demand.findByType { null }
+    }
+  }
+  
+  private final testData = DummyDependencyUtils.randomCoordinates()
+
+  private final dependency = DummyDependencyUtils.dummyDependency(testData)
 }

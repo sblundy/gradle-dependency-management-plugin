@@ -19,13 +19,13 @@ dependencyManagement {
 }
 ```
 
-Referencing a defined dependency is done normally in the `dependencies` block, by calling `dependencyManager.lookup(<group>, <name>)`
+Referencing a defined dependency is done normally in the `dependencies` block, by calling `dependencyFinder.getDependency(<group>, <name>)`
 
 *$PROJECT_HOME/module/build.gradle*
 ```groovy
 apply plugin: 'dependencyManagement'
 
 dependencies {
-  test dependencyManager.lookup('log4j', 'log4j')
+  test dependencyFinder.getDependency(group: 'org.testng', name: 'testng')
 }
 ```
