@@ -18,7 +18,10 @@ dependencies {
   compile gradleApi()
   groovy localGroovy()
 
+  functionalTestRuntime gradleApi()
   functionalTestCompile configurations.testCompile
+  functionalTestCompile files(jar.archivePath)
+  functionalTestRuntime configurations.compile
   functionalTestRuntime configurations.testRuntime
 
   codenarc 'org.codenarc:CodeNarc:0.18.1'
@@ -32,8 +35,6 @@ task functionalTest(type:Test, dependsOn: ['test', 'assemble']) {
   classpath = sourceSets.functionalTest.runtimeClasspath
   testReportDir = file('build/reports/functional-test')
   testResultsDir = file('build/functional-test-results')
-  systemProperty('projects.basedir', file('src/functionalTest/project').absolutePath)
-  systemProperty('sut.install.dir', file('build/libs').absolutePath)
 }
 
 build.dependsOn.add(functionalTest)
