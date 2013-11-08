@@ -1,10 +1,11 @@
-package org.gradle.plugins.dependencymanagement
+package org.sblundy.gradle.dependencymanagement
 
 import groovy.mock.interceptor.MockFor
 import org.gradle.api.Project
 import org.gradle.api.plugins.Convention
 import org.junit.Assert
 import org.junit.Test
+
 /**
  */
 class DependencyManagerTest {

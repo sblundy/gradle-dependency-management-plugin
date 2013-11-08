@@ -1,8 +1,17 @@
-package org.gradle.plugins.dependencymanagement
+package org.sblundy.gradle.dependencymanagement
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+/**
+ * Initializes the dependencyManagement plugin in a {@link Project}.
+ *
+ * The plugin is added to a project normally, like so:
+ *
+ * <pre><code>
+ *   apply plugin: 'dependencyManagement'
+ * </code></pre>
+ */
 class DependencyManagementPlugin implements Plugin<Project> {
   @Override
   void apply(final Project project) {

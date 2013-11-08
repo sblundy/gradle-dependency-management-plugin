@@ -1,4 +1,4 @@
-package org.gradle.plugins.dependencymanagement
+package org.sblundy.gradle.dependencymanagement
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder

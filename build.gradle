@@ -16,7 +16,7 @@ sourceSets {
 
 dependencies {
   compile gradleApi()
-  groovy localGroovy()
+  compile localGroovy()
 
   functionalTestRuntime gradleApi()
   functionalTestCompile configurations.testCompile
@@ -30,11 +30,35 @@ dependencies {
 cobertura {
   coverageSourceDirs = project.sourceSets.main.groovy.srcDirs
 }
+
+groovydoc {
+  groovyClasspath = configurations.compile
+  link('http://www.gradle.org/docs/current/javadoc', 'org.gradle.api.')
+  link('http://docs.oracle.com/javase/6/docs/api', 'java.,org.xml.,javax.,org.xml.')
+}
+
+task javadocJar(type: Jar, dependsOn: groovydoc) {
+  classifier = 'javadoc'
+  from "${buildDir}/docs/groovydoc"
+}
+
+task sourcesJar(type: Jar) {
+  from sourceSets.main.allSource
+  classifier = 'sources'
+}
+
 task functionalTest(type:Test, dependsOn: ['test', 'assemble']) {
   testClassesDir = sourceSets.functionalTest.output.classesDir
   classpath = sourceSets.functionalTest.runtimeClasspath
-  testReportDir = file('build/reports/functional-test')
-  testResultsDir = file('build/functional-test-results')
+  testReportDir = file("${buildDir}/reports/functional-test")
+  testResultsDir = file("${buildDir}/functional-test-results")
+}
+
+artifacts {
+  archives jar
+
+  archives javadocJar
+  archives sourcesJar
 }
 
 build.dependsOn.add(functionalTest)

@@ -1,4 +1,4 @@
-package org.gradle.plugins.dependencymanagement
+package org.sblundy.gradle.dependencymanagement
 
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency

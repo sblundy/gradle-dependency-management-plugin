@@ -19,6 +19,19 @@ dependencyManagement {
 }
 ```
 
+An optional configuration closure can be added.
+
+*$PROJECT_HOME/build.gradle*
+```groovy
+apply plugin: 'dependencyManagement'
+
+dependencyManagement {
+  dependency('org.testng:testng:5.5:jdk15') {
+    transitive = false
+  }
+}
+```
+
 Referencing a defined dependency is done normally in the `dependencies` block, by calling `dependencyFinder.getDependency(<group>, <name>)`
 
 *$PROJECT_HOME/module/build.gradle*
