@@ -1,4 +1,4 @@
-package org.sblundy.gradle.dependencymanagement
+package com.github.sblundy.gradle.dependencymanagement
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency

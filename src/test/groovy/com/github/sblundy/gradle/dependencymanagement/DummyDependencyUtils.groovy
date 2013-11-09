@@ -1,4 +1,4 @@
-package org.sblundy.gradle.dependencymanagement
+package com.github.sblundy.gradle.dependencymanagement
 
 import org.apache.commons.lang.RandomStringUtils
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency

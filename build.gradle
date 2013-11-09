@@ -1,9 +1,13 @@
 apply plugin: 'groovy'
 apply plugin: 'codenarc'
+
 buildscript {
   apply from: 'https://github.com/valkolovos/gradle_cobertura/raw/master/repo/gradle_cobertura/gradle_cobertura/1.2.1/coberturainit.gradle'
 }
+
+group = 'com.github.sblundy.gradle.dependencymanagement'
 version = '0.1'
+
 repositories {
   mavenCentral()
 }

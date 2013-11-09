@@ -1,4 +1,4 @@
-package org.sblundy.gradle.dependencymanagement
+package com.github.sblundy.gradle.dependencymanagement
 
 import groovy.mock.interceptor.MockFor
 import org.apache.commons.lang.RandomStringUtils
