@@ -8,7 +8,7 @@ Yes, this is shamelessly lifted from Maven. But these plugin will aim to be an i
 Usage
 -----------------------------------
 
-The dependency definitions are defined in the `dependencyManagement` block. Normally, it'll be in the root project, but it can be in any of the user module's parents, even the user module itself.
+The dependency definitions are defined in the `dependencyManagement` block. Normally, it'll be in the root project, but it can be in any of the user module's parents, even the user module itself. `dependencyManagement` block in sub-modules have a hierarchical relationship with any in their parents and can be used to overriding individual dependency configurations.
 
 *$PROJECT_HOME/build.gradle*
 ```groovy
