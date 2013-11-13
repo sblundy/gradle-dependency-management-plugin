@@ -7,7 +7,7 @@ import org.junit.Test
 
 class DependencyManagementPluginTest {
   @Test
-  public void addsManagedMethodToDependencyBlock() {
+  void addsManagedMethodToDependencyBlock() {
     Project project = ProjectBuilder.builder().build()
     project.configure(project) {
       apply plugin: DependencyManagementPlugin
@@ -17,7 +17,7 @@ class DependencyManagementPluginTest {
   }
 
   @Test
-  public void managedMethodLooksUpDependency() {
+  void managedMethodLooksUpDependency() {
     Project project = ProjectBuilder.builder().build()
     project.configure(project) {
       apply plugin: DependencyManagementPlugin

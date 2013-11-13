@@ -29,7 +29,7 @@ class DefinitionDatabase implements DefinitionLookup, DefinitionStore {
    * @return The first dependency it finds, or <code>null</code> if none is found
    */
   Dependency findDependency(Map<String, String> coordinates) {
-    if(coordinates.group == null) {
+    if (coordinates.group == null) {
       return findByName(coordinates.name)
     }
 
