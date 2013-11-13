@@ -25,6 +25,35 @@ class DefinitionDatabaseTest {
   }
 
   @Test
+  void definitionAddedIsFoundByJustName() {
+    def coordinates = randomCoordinates()
+    Dependency dep = dummyDependency(coordinates)
+
+    def sut = newSut()
+    sut.addDefinition(dep)
+    def output = sut.findDependency([name: coordinates.name])
+
+    assertSame(output, dep)
+  }
+
+  @Test(expected = IllegalArgumentException)
+  void exceptionThrownIfJustNameProvidedAndMultipleSpecified() {
+    def coordinates = randomCoordinates()
+    Dependency dep1 = dummyDependency(coordinates)
+    def coordinates2 = [
+        group: 'not-' + coordinates.group,
+        name: coordinates.name,
+        version: coordinates.version
+    ]
+    Dependency dep2 = dummyDependency(coordinates2)
+
+    def sut = newSut()
+    sut.addDefinition(dep1)
+    sut.addDefinition(dep2)
+    sut.findDependency([name: coordinates.name])
+  }
+
+  @Test
   void canDiffSameGroupDifferentName() {
     def coordinates = randomCoordinates()
     def similar = [group: coordinates.group, name: randomAlphabetic(7), version: coordinates.version]

@@ -29,12 +29,28 @@ class DefinitionDatabase implements DefinitionLookup, DefinitionStore {
    * @return The first dependency it finds, or <code>null</code> if none is found
    */
   Dependency findDependency(Map<String, String> coordinates) {
+    if(coordinates.group == null) {
+      return findByName(coordinates.name)
+    }
+
     def groupDefs = definitions.get(coordinates.group)
 
     if (null == groupDefs) {
       null
     } else {
       groupDefs.get(coordinates.name)
+    }
+  }
+
+  private Dependency findByName(String name) {
+    def byName = definitions.values().findAll { it.containsKey(name) }
+
+    if (byName.isEmpty()) {
+      null
+    } else if (byName.size() == 1) {
+      byName.get(0).get(name)
+    } else {
+      throw new IllegalArgumentException("Multiple definisions found for name '${name}'. Please specify a group.")
     }
   }
 }
