@@ -12,6 +12,17 @@ The dependency definitions are defined in the `dependencyManagement` block. Norm
 
 *$PROJECT_HOME/build.gradle*
 ```groovy
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath 'com.github.sblundy.gradle.dependencymanagement:gradle-dependency-management-plugin:0.2.0-SNAPSHOT'
+  }
+}
+
 apply plugin: 'dependency-management'
 
 dependencyManagement {
