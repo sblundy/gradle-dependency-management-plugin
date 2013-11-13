@@ -9,7 +9,7 @@ import org.gradle.api.Project
  * The plugin is added to a project normally, like so:
  *
  * <pre><code>
- *   apply plugin: 'dependencyManagement'
+ *   apply plugin: 'dependency-management'
  * </code></pre>
  */
 class DependencyManagementPlugin implements Plugin<Project> {

@@ -19,7 +19,7 @@ class FunctionalTest {
     }
 
     builder.add('subProject') {
-      apply plugin: 'dependencyManagement'
+      apply plugin: 'dependency-management'
 
       configurations {
         compile
