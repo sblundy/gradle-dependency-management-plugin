@@ -32,13 +32,13 @@ dependencyManagement {
 }
 ```
 
-Referencing a defined dependency is done normally in the `dependencies` block, by calling `dependencyFinder.getDependency(<group>, <name>)`
+Referencing a defined dependency in the `dependencies` block is done by calling `managed([group: <group>, name: <name>])`. This method is added by the plugin to `dependencies`.
 
 *$PROJECT_HOME/module/build.gradle*
 ```groovy
 apply plugin: 'dependency-management'
 
 dependencies {
-  test dependencyFinder.getDependency(group: 'org.testng', name: 'testng')
+  test managed group: 'org.testng', name: 'testng'
 }
 ```

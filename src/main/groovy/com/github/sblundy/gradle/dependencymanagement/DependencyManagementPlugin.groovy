@@ -17,6 +17,9 @@ class DependencyManagementPlugin implements Plugin<Project> {
   void apply(final Project project) {
     def db = new DefinitionDatabase()
     project.extensions.create('dependencyManagement', DependencyManagementExtension, project, db)
-    project.convention.create('dependencyFinder', DependencyManager, project, db)
+    def manager = project.convention.create('dependencyFinder', DependencyManager, project, db)
+    project.dependencies.metaClass.managed = { Map params ->
+      manager.getDependency(params)
+    }
   }
 }
