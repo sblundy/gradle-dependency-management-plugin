@@ -11,7 +11,7 @@ class FunctionalTest {
   def void subProjectFindsDependencyInParent() {
     def builder = new TestProjectBuilder()
     builder.configureRoot {
-      apply plugin: 'dependencyManagement'
+      apply plugin: 'dependency-management'
 
       dependencyManagement {
         dependency('log4j:log4j:1.2.17')
@@ -37,7 +37,7 @@ class FunctionalTest {
   def void dependencyClosureConfigInherited() {
     def builder = new TestProjectBuilder()
     builder.configureRoot {
-      apply plugin: 'dependencyManagement'
+      apply plugin: 'dependency-management'
 
       dependencyManagement {
         dependency('org.springframework:spring-core:3.2.2.RELEASE') {
@@ -52,7 +52,7 @@ class FunctionalTest {
         mavenCentral()
       }
 
-      apply plugin: 'dependencyManagement'
+      apply plugin: 'dependency-management'
 
       configurations {
         withClosure

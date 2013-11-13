@@ -12,7 +12,7 @@ The dependency definitions are defined in the `dependencyManagement` block. Norm
 
 *$PROJECT_HOME/build.gradle*
 ```groovy
-apply plugin: 'dependencyManagement'
+apply plugin: 'dependency-management'
 
 dependencyManagement {
   dependency('org.testng:testng:5.5:jdk15')
@@ -23,7 +23,7 @@ An optional configuration closure can be added.
 
 *$PROJECT_HOME/build.gradle*
 ```groovy
-apply plugin: 'dependencyManagement'
+apply plugin: 'dependency-management'
 
 dependencyManagement {
   dependency('org.testng:testng:5.5:jdk15') {
@@ -36,7 +36,7 @@ Referencing a defined dependency is done normally in the `dependencies` block, b
 
 *$PROJECT_HOME/module/build.gradle*
 ```groovy
-apply plugin: 'dependencyManagement'
+apply plugin: 'dependency-management'
 
 dependencies {
   test dependencyFinder.getDependency(group: 'org.testng', name: 'testng')
