@@ -10,7 +10,7 @@ buildscript {
 }
 
 group = 'com.github.sblundy.gradle.dependencymanagement'
-version = '0.1'
+version = '0.2.0-SNAPSHOT'
 
 repositories {
   mavenCentral()
@@ -55,7 +55,7 @@ task sourcesJar(type: Jar) {
   classifier = 'sources'
 }
 
-task functionalTest(type:Test, dependsOn: ['test', 'assemble']) {
+task functionalTest(type:Test, dependsOn: ['test', 'jar']) {
   testClassesDir = sourceSets.functionalTest.output.classesDir
   classpath = sourceSets.functionalTest.runtimeClasspath
   testReportDir = file("${buildDir}/reports/functional-test")
@@ -78,8 +78,14 @@ uploadArchives {
     mavenDeployer {
       beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
+      if (version.endsWith("-SNAPSHOT")) {
+        snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+          authentication(userName: sonatypeUsername, password: sonatypePassword)
+        }
+      } else {
       repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
         authentication(userName: sonatypeUsername, password: sonatypePassword)
+        }
       }
 
       pom.project {
