@@ -34,7 +34,7 @@ class DependencyManager implements DefinitionFinder {
     if (null != dependency) {
       dependency
     } else {
-      throw new IllegalArgumentException('Dependency not found')
+      throw new IllegalArgumentException("Dependency not found: <${coordinates}>")
     }
   }
 
