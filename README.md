@@ -19,7 +19,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.github.sblundy.gradle.dependencymanagement:gradle-dependency-management-plugin:0.2.0-SNAPSHOT'
+    classpath 'com.github.sblundy.gradle.dependencymanagement:gradle-dependency-management-plugin:0.2.0'
   }
 }
 
@@ -50,6 +50,6 @@ Referencing a defined dependency in the `dependencies` block is done by calling 
 apply plugin: 'dependency-management'
 
 dependencies {
-  test managed group: 'org.testng', name: 'testng'
+  test managed(group: 'org.testng', name: 'testng')
 }
 ```
