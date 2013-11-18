@@ -8,7 +8,7 @@ buildscript {
 }
 
 group = 'com.github.sblundy.gradle.dependencymanagement'
-version = '0.2.0'
+version = '0.2.1-SNAPSHOT'
 
 repositories {
   mavenCentral()
@@ -56,8 +56,8 @@ task sourcesJar(type: Jar) {
 task functionalTest(type:Test, dependsOn: ['test', 'jar']) {
   testClassesDir = sourceSets.functionalTest.output.classesDir
   classpath = sourceSets.functionalTest.runtimeClasspath
-  testReportDir = file("${buildDir}/reports/functional-test")
-  testResultsDir = file("${buildDir}/functional-test-results")
+  reports.html.destination = file("${buildDir}/reports/functional-test")
+  reports.junitXml.destination = file("${buildDir}/functional-test-results")
 }
 
 artifacts {
