@@ -33,7 +33,7 @@ class DependencyManagementExtension {
     this.store = store
   }
 
-  def dependency(String dependencyNotation) {
+  def dependency(Object dependencyNotation) {
     def dependency = project.dependencies.create(dependencyNotation)
     store.addDefinition(dependency)
   }
