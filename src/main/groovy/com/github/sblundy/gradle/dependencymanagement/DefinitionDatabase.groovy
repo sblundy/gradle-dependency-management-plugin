@@ -34,12 +34,7 @@ class DefinitionDatabase implements DefinitionLookup, DefinitionStore {
     }
 
     def groupDefs = definitions.get(coordinates.group)
-
-    if (null == groupDefs) {
-      null
-    } else {
-      groupDefs.get(coordinates.name)
-    }
+    groupDefs?.get(coordinates.name)
   }
 
   private Dependency findByName(String name) {
@@ -48,7 +43,7 @@ class DefinitionDatabase implements DefinitionLookup, DefinitionStore {
     if (byName.isEmpty()) {
       null
     } else if (byName.size() == 1) {
-      byName.get(0).get(name)
+      byName.first().get(name)
     } else {
       throw new IllegalArgumentException("Multiple definisions found for name '${name}'. Please specify a group.")
     }

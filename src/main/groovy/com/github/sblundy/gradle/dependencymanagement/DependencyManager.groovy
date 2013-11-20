@@ -48,8 +48,7 @@ class DependencyManager implements DefinitionFinder {
       return dependency
     }
 
-    def parentManager = findParentManager()
-    null == parentManager ? null : parentManager.findDependency(coordinates)
+    findParentManager()?.findDependency(coordinates)
   }
 
   private DefinitionFinder findParentManager() {
