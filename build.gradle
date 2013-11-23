@@ -8,7 +8,7 @@ buildscript {
 }
 
 group = 'com.github.sblundy.gradle.dependencymanagement'
-version = '0.2.1-SNAPSHOT'
+version = '0.2.1'
 
 repositories {
   mavenCentral()

@@ -19,7 +19,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.github.sblundy.gradle.dependencymanagement:gradle-dependency-management-plugin:0.2.0'
+    classpath 'com.github.sblundy.gradle.dependencymanagement:gradle-dependency-management-plugin:0.2.1'
   }
 }
 
